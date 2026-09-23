@@ -891,20 +891,26 @@ const weddingMusic = document.getElementById('weddingMusic');
 const musicToggle = document.getElementById('musicToggle');
 let opened = false;
 function openInvitation(){
-  if(opened) return; opened = true;
+  if(opened) return;
+  opened = true;
+
+  // Запускаем звук непосредственно внутри жеста пользователя — это важно для iPhone/Safari.
+  weddingMusic.volume = 0.65;
+  const playPromise = weddingMusic.play();
+
   envelope.classList.add('opening');
   site.classList.add('ready');
   site.setAttribute('aria-hidden','false');
-  weddingMusic.volume = 0.65;
-  weddingMusic.play().then(()=>{
-    musicToggle.classList.add('show');
-    musicToggle.textContent = '♫';
-    musicToggle.setAttribute('aria-label','Выключить музыку');
-  }).catch(()=>{
-    musicToggle.classList.add('show');
-    musicToggle.textContent = '♫';
-    musicToggle.setAttribute('aria-label','Включить музыку');
-  });
+  musicToggle.classList.add('show');
+  musicToggle.textContent = '♫';
+
+  if (playPromise && typeof playPromise.then === 'function') {
+    playPromise.then(() => {
+      musicToggle.setAttribute('aria-label','Выключить музыку');
+    }).catch(() => {
+      musicToggle.setAttribute('aria-label','Включить музыку');
+    });
+  }
   setTimeout(()=> envelope.remove(), 1200);
 }
 envelope.addEventListener('click', openInvitation);
