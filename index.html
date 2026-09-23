@@ -792,6 +792,20 @@ body.rsvp-lock{overflow:hidden}
 .site-polaroid-left{transform:rotate(-5deg)}
 .site-polaroid-right{transform:rotate(5deg)}
 @media(max-width:640px){.photo-pair{gap:8px;flex-wrap:nowrap}.site-polaroid{width:42vw;padding:8px 8px 36px}.couple-polaroid-approved{padding:36px 8px 48px}}
+
+/* Фотоистория — отдельные оригинальные фотографии без генеративной обработки */
+.childhood-photos{background:#4D694E;color:#FFF3D5;padding:52px 18px 64px;text-align:center;overflow:hidden}
+.childhood-photos h2,.couple-photo-section h2{font-family:"Great Vibes","Cormorant Garamond",Georgia,serif;font-weight:400;font-size:clamp(44px,8vw,72px);margin:0 0 28px}
+.childhood-photos .photo-pair{max-width:820px}
+.childhood-photos .site-polaroid{width:min(38vw,320px);background:#fffdf5;padding:12px 12px 48px}
+.childhood-photos .site-polaroid img{aspect-ratio:1/1.08;object-fit:cover}
+.childhood-photos .child-slava img{object-position:50% 35%}
+.childhood-photos .child-marina img{object-position:50% 50%}
+.childhood-caption{font-family:"Cormorant Garamond",Georgia,serif;font-size:21px;line-height:1.35;margin:30px auto 0;max-width:520px}
+.couple-photo-section{background:#FFF3D5;color:#4D694E;padding:58px 18px 68px;text-align:center;overflow:hidden}
+.couple-photo-frame{width:min(88%,760px);margin:0 auto;background:#fff;padding:14px 14px 48px;box-shadow:0 14px 28px rgba(50,60,45,.18);transform:rotate(-1.2deg)}
+.couple-photo-frame img{display:block;width:100%;height:auto;max-height:760px;object-fit:contain}
+@media(max-width:640px){.childhood-photos{padding:38px 8px 48px}.childhood-photos .photo-pair{gap:8px;flex-wrap:nowrap}.childhood-photos .site-polaroid{width:43vw;padding:8px 8px 34px}.childhood-caption{font-size:18px;padding:0 18px}.couple-photo-section{padding:42px 10px 52px}.couple-photo-frame{width:94%;padding:8px 8px 32px}}
 </style>
   <link rel="preload" as="image" href="couple-beach.jpg">
 </head>
@@ -818,6 +832,15 @@ body.rsvp-lock{overflow:hidden}
 </section>
 
 
+<section class="childhood-photos reveal" id="childhood-photos">
+  <h2>Вячеслав + Марина</h2>
+  <div class="photo-pair" aria-label="Вячеслав и Марина в детстве">
+    <figure class="site-polaroid site-polaroid-left child-slava"><img src="vyacheslav-child.jpg" alt="Вячеслав в детстве"></figure>
+    <figure class="site-polaroid site-polaroid-right child-marina"><img src="IMG_7622.jpg" alt="Марина в детстве"></figure>
+  </div>
+  <p class="childhood-caption">Узнали этих карапузов? ♡</p>
+</section>
+
 <section class="couple-polaroid-approved reveal" id="couple-polaroid">
   <div class="photo-pair" aria-label="Вячеслав и Марина">
     <figure class="site-polaroid site-polaroid-left"><img src="vyacheslav-adult.jpg" alt="Вячеслав"></figure>
@@ -825,6 +848,10 @@ body.rsvp-lock{overflow:hidden}
   </div>
 </section>
 
+<section class="couple-photo-section reveal" id="couple-photo">
+  <h2>Вместе ♡</h2>
+  <figure class="couple-photo-frame"><img src="couple-beach.jpg" alt="Марина и Вячеслав вместе"></figure>
+</section>
 
 <section class="info-approved reveal" id="wedding-info">
   <img src="wedding-info.png" alt="Меню, пожелания по подаркам и дресс-код">
@@ -903,12 +930,14 @@ function tick(){
   document.getElementById('minutes').textContent = String(m).padStart(2,'0');
   document.getElementById('seconds').textContent = String(s).padStart(2,'0');
 }
-tick(); setInterval(tick,1000);
+if(document.getElementById('days')){ tick(); setInterval(tick,1000); }
 
 // Календарь: ноябрь 2026, понедельник — первый день недели.
 const grid = document.getElementById('calendar');
+if(grid){
 for(let i=0;i<6;i++){ const e=document.createElement('span');e.className='empty';e.textContent='·';grid.append(e); }
 for(let day=1;day<=30;day++){ const s=document.createElement('span');s.textContent=day;if(day===6)s.className='wedding-day';grid.append(s); }
+}
 
 const io = new IntersectionObserver(entries => entries.forEach(e => { if(e.isIntersecting){e.target.classList.add('visible');io.unobserve(e.target);} }),{threshold:.08});
 document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
@@ -916,8 +945,8 @@ document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 const dlg = document.getElementById('rsvpDialog');
 const form = document.getElementById('rsvpForm');
 const showForm = ()=> dlg.showModal();
-document.getElementById('confirmBtn').addEventListener('click',showForm);
-document.getElementById('messageBtn').addEventListener('click',showForm);
+document.getElementById('confirmBtn')?.addEventListener('click',showForm);
+document.getElementById('messageBtn')?.addEventListener('click',showForm);
 document.getElementById('closeDialog').addEventListener('click',()=>dlg.close());
 
 // Опционально: укажите URL обработчика (Formspree / Make / свой endpoint), чтобы ответы приходили онлайн.
